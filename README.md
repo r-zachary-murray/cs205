@@ -18,7 +18,7 @@ See [Instructions](/Webpages/Instructions.md) for instructions on how to compile
 
 
 ## Table of Contents
-1. [Problem Statement](/Webpages/ProblemStatement.md)
+1. [Problem Statement](/Webpages/Statement.md)
 3. [Data](/Webpages/Data.md)
 4. [Brute Force Control](/Webpages/BruteForce.md)
 5. [Grid based method](/Webpages/Grid.md)
