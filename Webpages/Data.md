@@ -3,6 +3,7 @@
 
 ### Normal Distribution
 
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
 
 ### Gaussian Distribution
 
