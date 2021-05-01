@@ -1,11 +1,14 @@
 ## We generate a few different mock datasets to test our algoirthyms, 
 
 
-### Normal Distribution
+### Uniform Distribution
 
-![Alt Text](/Tests/lognormal/out.gif | width=100)
+![Normal](/Tests/uniform/out.gif)
 
 ### Gaussian Distribution
 
+![Normal](/Tests/gaussian/out.gif)
 
 ### LogNormal Distribution
+
+![Normal](/Tests/lognormal/out.gif)
