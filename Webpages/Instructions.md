@@ -8,4 +8,4 @@ The code is contained in a single file that can be run with a g++ compiler. Belo
 
         g++ -o octree octree.cpp ; ./octree
 
-* Add version / reproducibility info here * 
+* rmember to add compiler version / reproducibility info here
