@@ -1,8 +1,8 @@
-# CS 205 Final Project: Parallel Graph Algorithms
+# CS 205 Final Project: Parallel Collision Detection Algorithms
 
-## Spring 2020
+## Spring 2021
 
-## Group 12
+## Group ___
 
 - Catherine Ding
 - Zachary Murray
