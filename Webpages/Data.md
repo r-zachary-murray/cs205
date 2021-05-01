@@ -1,5 +1,4 @@
-## We generate a few different mock datasets to test our algoirthyms, 
-
+## We generate a few different mock datasets to test your algorithms. They were each generated with 10^k points where k $\elem$ {3,4,5,6}. 
 
 ### Uniform Distribution
 
