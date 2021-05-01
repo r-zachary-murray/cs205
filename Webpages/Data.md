@@ -1,4 +1,6 @@
-## We generate a few different mock datasets to test your algorithms. They were each generated with 10^k points where k $\in$ {3,4,5,6}. Below are the descirptions of each dataset as well as a graphic repersentation of them for 10^3 points.  
+## Datasets
+
+We generate a few different mock datasets to test our algorithms. They were each generated with 10^k points where k $\in$ {3,4,5,6}. Below are the descirptions of each dataset as well as a graphic repersentation of them for 10^3 points.  
 
 ### Uniform Distribution
 
