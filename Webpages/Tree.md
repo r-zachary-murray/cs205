@@ -1,5 +1,9 @@
 # Tree based methods
 
+All tree based collision detection algorithms fundamentally work by dividing up the domain recursively into smaller subdomains then checking collections of these subdomains for collsions using brute force. In the case of tree-based algorithyms these sections can adaptively adjust to the particles in the simulation domain and yield improvements in preformance over what would be expected from a static grid.
+
+
+
 There are several different ways of implmenting a tree-based collision detection algorithm.  There are two main classes of tree based methods for 3 dimensional collision detection. Octrees and KDtrees. 
 
 ## KDtrees
@@ -22,3 +26,22 @@ We elected to use an octree approach for our tree based collision detecton algor
 
 ## Our Implementation
 
+Our implementation begins by assigning each point coordinates and an index, these coordinates are recursively split by octree if there are more than a set number of points contained in the cell. In general this stopping condition is a free parameter and we examine several different values of it in our analysis. 
+
+Next we need to check each subdomain and its neighbors with brute force. We recognized neighbors by testing if they share a vertex with the cell in question, we do so by a brute force search over all the vertices for every cell until one is found.  *talk about alterantive algorithyms* 
+
+### Serial Benchamrking 
+
+
+
+
+## Parallelization Stratagey: 
+
+The recursive nature of the tree based algorithm and the splits that'll be necessary to sort the data into bins bodes poorly for GPU parallelization.  While the additional brute force checks of the subcells can be parallelized by GPU, the tree based method implies a large number of small brute force problems. In practice the data from each one of these subproblems will have to be to be transferred to the GPU from memory, incurring overheads each time. 
+
+*investigate potential for gpu parallelization of vertex search*
+
+Here we focus on OpenMP parallelization of our serial code and create an MPI OpenMP hybrid parallel version that can be run on distributed memory systems. 
+
+
+### Parallel Benchmarking
