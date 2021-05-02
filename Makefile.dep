@@ -1,0 +1,3 @@
+common.o: common.cc common.hh
+dop853.o: dop853.cc dop853.hh
+SAP.o: SAP.cpp SAP.h dop853.hh common.hh
