@@ -44,9 +44,11 @@ void SAP::init_test() {
 }
 void SAP::InsertionSort(double *in)
 {
+	int num = 0;
 	for (unsigned i = 1; i < IntList_x.size(); ++i) {
 		for (int j = i; j > 0&& (in[3*IntList_x[j]] < in[3 * IntList_x[j-1]]); --j) {
 			std::swap(IntList_x[j], IntList_x[j - 1]);
+			num++;
 		}
 		/**First version only requires one dimension list*/
 		/*for (int j = i; j > 0 && (w[6 * IntList_x[j]+1] < w[6 * IntList_x[j - 1]+1]); --j) {
@@ -56,6 +58,7 @@ void SAP::InsertionSort(double *in)
 			std::swap(IntList_z[j], IntList_z[j - 1]);
 		}*/
 	}
+	printf("InsertionSort swap number:%d\n", num);
 }
 void SAP::Broadphase(double *in) {
 	//============Sort==============
@@ -109,6 +112,7 @@ void SAP::Narrowphase(double tt, double *in, double *out) {
 void SAP::ff(double tt, double *in, double *out) {
 	Broadphase(in);
 	Narrowphase(tt, in, out);
+	//for (int i = 0; i < n; i++) printf("%g\n", w[i]);
 }
 /** Saves a snapshot of point positions at a particular output frame.
  * \param[in] fnum the frame number.

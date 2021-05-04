@@ -43,5 +43,5 @@ int main() {
 	pp = sap_test.w;
 	vp = sap_test.w + 3 * sap_test.n;
 	for (int i = 0; i < sap_test.n; i++) printf("i: %d p:(%g, %g, %g) v:(%g, %g, %g)\n", i, pp[3 * i],pp[3 * i + 1], pp[3 * i + 2], vp[3 * i], vp[3 * i + 1], vp[3 * i + 2]);
-	sap_test.solve(0, 120, 20);
+	sap_test.solve(0, 1200, 2000);
 }
