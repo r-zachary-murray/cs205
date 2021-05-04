@@ -26,7 +26,7 @@ int main() {
 	SAP sap_test(5e3, 5e3, 0.25, diam, fn);
 	sap_test.atoli = 1e-7;
 	sap_test.init_test();
-	double *pp = sap_test.w, *vp = sap_test.w + 3 * sap_test.n;
+	/*double *pp = sap_test.w, *vp = sap_test.w + 3 * sap_test.n;
 	for (int i = 0; i < sap_test.n; i++, pp += 3, vp += 3) {
 		double x = pp[3 * i], y = pp[3 * i + 1], z = pp[3 * i + 2], th = atan2(y, x),
 			sth = sin(th), cth = cos(th),
@@ -39,7 +39,7 @@ int main() {
 
 		*vp = -y; vp[1] = x; vp[2] = 0;
 		sap_test.phase[i] = th;
-	}
+	}*/
 	pp = sap_test.w;
 	vp = sap_test.w + 3 * sap_test.n;
 	for (int i = 0; i < sap_test.n; i++) printf("i: %d p:(%g, %g, %g) v:(%g, %g, %g)\n", i, pp[3 * i],pp[3 * i + 1], pp[3 * i + 2], vp[3 * i], vp[3 * i + 1], vp[3 * i + 2]);

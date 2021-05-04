@@ -23,23 +23,30 @@ SAP::SAP(int n_, double K_, double damp_, double diam_, const char *filename_) :
 	}
 }
 void SAP::init_test() {
-	const double h = 2 * M_PI / n;
+	//const double h = 2 * M_PI / n;
 	double *pp = w, *vp = w + 3 * n;
 	for (int i = 0; i < n; i++, pp += 3, vp += 3) {
-		double r = 1 + 0.3*cos(90 * h*i),
-			s = 0.3*sin(90 * h*i),
-			cth = cos(h*i), sth = sin(h*i);
+		//double r = 1 + 0.3*cos(90 * h*i),
+			//s = 0.3*sin(90 * h*i),
+			//cth = cos(h*i), sth = sin(h*i);
 
 		// Set position
-		*pp = cth * r;
-		pp[1] = sth * r;
-		pp[2] = s;
+		*pp = rnd()*2.-1;
+		pp[1] = rnd()*2-1;
+		pp[2] = rnd()*0.4-0.2;
 
 		// Set velocity and color phase
-		*vp = -sth * r;
-		vp[1] = cth * r;
-		vp[2] = 0;
-		phase[i] = i * h;
+		if (i % 100 == 0) {
+			*vp = rnd()*2.-1;
+			vp[1] = rnd()*2.-1;
+			vp[2] = 0;
+			//phase[i] = i * h;
+		}
+		else {
+			*vp = 0;
+			vp[1] = 0;
+			vp[2] = 0;
+		}
 	}
 }
 void SAP::InsertionSort(double *in)
