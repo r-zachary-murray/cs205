@@ -1,7 +1,7 @@
 # Compiler and compilation flags
 cc=gcc
 cxx=g++
-cflags=-Wall -ansi -pedantic -O3 -pg
+cflags=-Wall -ansi -pedantic -O3 -pg -DUSE_CLOCK
 
 # MPI compiler
 mpicxx=mpicxx -Wno-long-long

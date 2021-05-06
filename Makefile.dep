@@ -1,3 +1,4 @@
 common.o: common.cc common.hh
 dop853.o: dop853.cc dop853.hh
-SAP.o: SAP.cpp SAP.h dop853.hh common.hh
+timing.o: timing.c timing.h
+SAP.o: SAP.cpp SAP.h dop853.hh common.hh timing.h

@@ -4,6 +4,7 @@
 #include <vector>
 #include "common.hh"
 #include "dop853.hh"
+#include "timing.h"
 struct colpair {
 	int a;
 	int b;
@@ -26,6 +27,9 @@ public:
 	const double diam;
 	/** The ball diameter squared. */
 	const double diamsq;
+	/** For calculateing the average broad phase time*/
+	double time_sum;
+	int num_bf;
 	/** The color phases. */
 	double* const phase;
 	/** The output directory filename. */
@@ -43,6 +47,8 @@ private:
 	double o_wtime;
 	double tbuild;
 	double tfind;
+	/**size of collision detection region*/
+	double size;
 	/** Candidate set*/
 	std::vector<colpair> Candidateset;
 	/** Interval list*/

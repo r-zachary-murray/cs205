@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 #include <cstdio>
+
 inline double rnd() {
 	return (1. / RAND_MAX)*static_cast<double>(rand());
 }
@@ -14,26 +15,21 @@ inline double rnd() {
  * \param[in] diam_ the ball diameter.
  * \param[in] filename_ the name of the output directory to write to. */
 SAP::SAP(int n_, double K_, double damp_, double diam_, const char *filename_) :
-	dop853(6 * n_), n(n_), K(K_), damp(damp_), diam(diam_),radius(diam_/2.), diamsq(diam_*diam_),
-	phase(new double[n]), filename(filename_) {
-	for (int i = 0; i < n; i++) {
-		IntList_x.push_back(i);
-		//IntList_y.push_back(i);
-		//IntList_z.push_back(i);
-	}
+	dop853(6 * n_), n(n_),size(n/100000*2), K(K_), damp(damp_), diam(diam_),radius(diam_/2.), diamsq(diam_*diam_),
+	phase(new double[n]), filename(filename_),num_bf(0),time_sum(0) {
+	init_test();
+	//for (int i = 0; i < n; i++) {
+		//IntList_x.push_back(i);
+	//}
 }
 void SAP::init_test() {
-	//const double h = 2 * M_PI / n;
-	double *pp = w, *vp = w + 3 * n;
+	double *pp = w, *vp = w + 3 * n,h=size/n;
 	for (int i = 0; i < n; i++, pp += 3, vp += 3) {
-		//double r = 1 + 0.3*cos(90 * h*i),
-			//s = 0.3*sin(90 * h*i),
-			//cth = cos(h*i), sth = sin(h*i);
 
 		// Set position
-		*pp = rnd()*2.-1;
-		pp[1] = rnd()*2-1;
-		pp[2] = rnd()*0.4-0.2;
+		*pp = h*i-10;
+		pp[1] = rnd()*size-size/2.;
+		pp[2] = rnd()*size/10.*2-size/10.;
 
 		// Set velocity and color phase
 		if (i % 100 == 0) {
@@ -47,12 +43,20 @@ void SAP::init_test() {
 			vp[1] = 0;
 			vp[2] = 0;
 		}
+		IntList_x.push_back(i);
+		//for (int j = i; j > 0 && (w[3 * IntList_x[j]] < w[3 * IntList_x[j - 1]]); --j) 
+		//	std::swap(IntList_x[j], IntList_x[j - 1]);
 	}
 }
 void SAP::InsertionSort(double *in)
 {
 	int num = 0;
+	//for (unsigned i = 1; i < 100; ++i) printf("i:%d x_i:%g \n",i, in[3 * IntList_x[i]]);
+	//printf("===========================================startsort=================================\n");
 	for (unsigned i = 1; i < IntList_x.size(); ++i) {
+		if(i%(IntList_x.size()/10)==0)
+			printf("%d\n", i*10/ IntList_x.size());
+		
 		for (int j = i; j > 0&& (in[3*IntList_x[j]] < in[3 * IntList_x[j-1]]); --j) {
 			std::swap(IntList_x[j], IntList_x[j - 1]);
 			num++;
@@ -65,9 +69,13 @@ void SAP::InsertionSort(double *in)
 			std::swap(IntList_z[j], IntList_z[j - 1]);
 		}*/
 	}
+	//printf("===========================================endsort=================================\n");
+	//for (unsigned i = 1; i < 100; ++i) printf("i:%d x_i:%g \n", i, in[3 * IntList_x[i]]);
 	printf("InsertionSort swap number:%d\n", num);
 }
 void SAP::Broadphase(double *in) {
+	timing_t tstart, tend;
+	get_time(&tstart);
 	//============Sort==============
 	InsertionSort(in);
 	//============Prune=============
@@ -86,6 +94,10 @@ void SAP::Broadphase(double *in) {
 			Candidateset.push_back(colpair(cur_id, comp_id));
 		}
 	}
+	get_time(&tend);
+	time_sum += timespec_diff(tstart, tend);
+	num_bf++;
+	printf("time_diff:%g,time_sum:%g, num_bf:%d\n", timespec_diff(tstart, tend),time_sum, num_bf);
 }
 void SAP::Narrowphase(double tt, double *in, double *out) {
 	
@@ -94,9 +106,9 @@ void SAP::Narrowphase(double tt, double *in, double *out) {
 	double dx, dy, dz, rsq;
 	//damping force
 	for (int i = 0; i < 3 * n; i += 3) {
-		acc[i] = -in[i] - damp * vel[i];
-		acc[i + 1] = -in[i + 1] - damp * vel[i + 1];
-		acc[i + 2] = -in[i + 2] - damp * vel[i + 2];
+		acc[i] =- damp * vel[i];
+		acc[i + 1] = - damp * vel[i + 1];
+		acc[i + 2] = - damp * vel[i + 2];
 	}
 	//loop over candidateset
 	for (unsigned i = 0; i < Candidateset.size();i++) {
@@ -141,8 +153,8 @@ void SAP::output(int fnum, double *out) {
 	// Assemble the output filename and output the particle information
 	sprintf(buf, "%s/pts.%d", filename, fnum);
 	FILE *outf = safe_fopen(buf, "w");
-	double *pp = out;
-	for (int i = 0; i < n; i++, pp += 3) fprintf(outf, "%g %g %g %g\n", *pp, pp[1], pp[2], phase[i]);
+	double *pp = out,*vp=out+3*n;
+	for (int i = 0; i < n; i++, pp += 3,vp+=3) fprintf(outf, "%g %g %g %g %g %g\n", *pp, pp[1], pp[2],*vp,vp[1],vp[2]);
 	fclose(outf);
 
 	// Save the current time

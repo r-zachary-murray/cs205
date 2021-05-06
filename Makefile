@@ -2,7 +2,7 @@
 include ./config.mk
 
 # Lists of files to be built
-objs=dop853.o common.o SAP.o 
+objs=dop853.o common.o timing.o SAP.o 
 src=$(patsubst %.o,%.cc,$(objs) $(mg_objs))
 execs=SAP_tester
 
