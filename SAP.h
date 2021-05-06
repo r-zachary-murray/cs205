@@ -52,7 +52,7 @@ private:
 	/** Candidate set*/
 	std::vector<colpair> Candidateset;
 	/** Interval list*/
-	std::vector<int> IntList_x;// , IntList_y, IntList_z; Version1
+	int* IntList_x;//, IntList_y, IntList_z; //Version1
 	std::vector<int> ActiveList;
 	void Narrowphase(double tt, double *in, double *out);
 	void Broadphase(double *in);

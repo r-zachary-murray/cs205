@@ -15,8 +15,8 @@ inline double rnd() {
  * \param[in] diam_ the ball diameter.
  * \param[in] filename_ the name of the output directory to write to. */
 SAP::SAP(int n_, double K_, double damp_, double diam_, const char *filename_) :
-	dop853(6 * n_), n(n_),size(n/100000*2), K(K_), damp(damp_), diam(diam_),radius(diam_/2.), diamsq(diam_*diam_),
-	phase(new double[n]), filename(filename_),num_bf(0),time_sum(0) {
+	dop853(6 * n_), n(n_),size(n/100.*6.), K(K_), damp(damp_), diam(diam_),radius(diam_/2.), diamsq(diam_*diam_),
+	phase(new double[n]), filename(filename_),num_bf(0),time_sum(0),IntList_x(new int[n]){
 	init_test();
 	//for (int i = 0; i < n; i++) {
 		//IntList_x.push_back(i);
@@ -27,10 +27,10 @@ void SAP::init_test() {
 	for (int i = 0; i < n; i++, pp += 3, vp += 3) {
 
 		// Set position
-		*pp = h*i-10;
+		*pp = h*i-size/2.;
 		pp[1] = rnd()*size-size/2.;
 		pp[2] = rnd()*size/10.*2-size/10.;
-
+		//printf("the %dth particle %g %g %g\n",i, pp[0], pp[1], pp[2]);
 		// Set velocity and color phase
 		if (i % 100 == 0) {
 			*vp = rnd()*2.-1;
@@ -43,17 +43,37 @@ void SAP::init_test() {
 			vp[1] = 0;
 			vp[2] = 0;
 		}
-		IntList_x.push_back(i);
-		//for (int j = i; j > 0 && (w[3 * IntList_x[j]] < w[3 * IntList_x[j - 1]]); --j) 
-		//	std::swap(IntList_x[j], IntList_x[j - 1]);
+		IntList_x[i]=i;
 	}
+	//for (int i = 1; i < 300; ++i) printf("i:%d w_i:%g \n", IntList_x[i], w[ IntList_x[i]]);
 }
 void SAP::InsertionSort(double *in)
 {
-	int num = 0;
-	//for (unsigned i = 1; i < 100; ++i) printf("i:%d x_i:%g \n",i, in[3 * IntList_x[i]]);
-	//printf("===========================================startsort=================================\n");
-	for (unsigned i = 1; i < IntList_x.size(); ++i) {
+	int num = 0,*temp=new int[n];
+	bool swap = true,s;
+	//for (int i = 1; i < 100; ++i) printf("i:%d x_i:%g \n",i, in[3 * IntList_x[i]]);
+	printf("===========================================startsort=================================\n");
+	while (swap) {
+		swap = false;
+		printf("%d\n", num++);
+		for (int i = 0; i < n-1; i += 2) {
+			//printf("%d,%g;%d,%g\n", IntList_x[i], in[3*IntList_x[i]], IntList_x[i + 1], in[3*IntList_x[i + 1]]);
+			s = (in[3*IntList_x[i]] > in[3*IntList_x[i + 1]]);
+			//printf("=========%d\n", s);
+			swap =  swap||s;
+			temp[i] =  s? IntList_x[i+1] : IntList_x[i];
+			temp[i + 1] = IntList_x[i + 1]+ IntList_x[i] - temp[i];
+		}
+		for (int i = 1; i < n-1; i += 2) {
+			//printf("%d,%g;%d,%g\n", temp[i], in[3 * temp[i]], temp[i + 1], in[3 * temp[i + 1]]);
+			s = (in[3*temp[i]] > in[3*temp[i + 1]]);
+			//printf("=========%d\n", s);
+			swap = swap||s;
+			IntList_x[i] =  s? temp[i + 1] : temp[i];
+			IntList_x[i + 1] = temp[i + 1] + temp[i] - IntList_x[i];
+		}
+	}
+	/*for (int i = 1; i < IntList_x.size(); ++i) {
 		if(i%(IntList_x.size()/10)==0)
 			printf("%d\n", i*10/ IntList_x.size());
 		
@@ -61,23 +81,26 @@ void SAP::InsertionSort(double *in)
 			std::swap(IntList_x[j], IntList_x[j - 1]);
 			num++;
 		}
-		/**First version only requires one dimension list*/
+		//First version only requires one dimension list*/
 		/*for (int j = i; j > 0 && (w[6 * IntList_x[j]+1] < w[6 * IntList_x[j - 1]+1]); --j) {
 			std::swap(IntList_y[j], IntList_y[j - 1]);
 		}
 		for (int j = i; j > 0 && (w[6 * IntList_x[j]+2] < w[6 * IntList_x[j - 1]+2]); --j) {
 			std::swap(IntList_z[j], IntList_z[j - 1]);
-		}*/
+		}
 	}
 	//printf("===========================================endsort=================================\n");
 	//for (unsigned i = 1; i < 100; ++i) printf("i:%d x_i:%g \n", i, in[3 * IntList_x[i]]);
-	printf("InsertionSort swap number:%d\n", num);
+	printf("InsertionSort swap number:%d\n", num);*/
+	delete[] temp;
 }
 void SAP::Broadphase(double *in) {
 	timing_t tstart, tend;
 	get_time(&tstart);
 	//============Sort==============
 	InsertionSort(in);
+	get_time(&tend);
+	double sort_time = timespec_diff(tstart, tend);
 	//============Prune=============
 	Candidateset.clear();
 	ActiveList.clear();
@@ -97,7 +120,7 @@ void SAP::Broadphase(double *in) {
 	get_time(&tend);
 	time_sum += timespec_diff(tstart, tend);
 	num_bf++;
-	printf("time_diff:%g,time_sum:%g, num_bf:%d\n", timespec_diff(tstart, tend),time_sum, num_bf);
+	printf("sort:%g,prune: %g, time_sum:%g, num_bf:%d\n", sort_time,timespec_diff(tstart, tend)-sort_time,time_sum, num_bf);
 }
 void SAP::Narrowphase(double tt, double *in, double *out) {
 	
